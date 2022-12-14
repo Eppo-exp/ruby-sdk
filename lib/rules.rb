@@ -27,9 +27,9 @@ module EppoClient
   class Rule
     attr_accessor :allocation_key, :conditions
 
-    def initialize(allocation_key:, conditions:)
-      @allocation_key = allocation_key
-      @conditions = conditions
+    def initialize(rule)
+      @allocation_key = rule['allocationKey']
+      @conditions = rule['conditions']
     end
   end
 
@@ -48,7 +48,7 @@ module EppoClient
 
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
   def evaluate_condition(subject_attributes, condition)
-    subject_value = subject_attributes[condition.attribute]
+    subject_value = subject_attributes[condition['attribute']]
     return false if subject_value.nil?
 
     case condition.operator
@@ -80,4 +80,6 @@ module EppoClient
     end
   end
   # rubocop:enable Metrics/MethodLength
+
+  module_function :find_matching_rule, :matches_rule, :evaluate_condition, :evaluate_numeric_condition
 end

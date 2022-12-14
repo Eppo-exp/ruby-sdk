@@ -15,8 +15,9 @@ module EppoClient
     @client.poller = EppoClient::Poller.new(
       EppoClient::POLL_INTERVAL_MILLIS,
       EppoClient::POLL_JITTER_MILLIS,
-      proc { config_requestor.fetch_and_store_configurations }
+      proc { @client.config_requestor.fetch_and_store_configurations }
     )
+    @client.poller.start
   end
 
   # rubocop:disable Metrics/MethodLength

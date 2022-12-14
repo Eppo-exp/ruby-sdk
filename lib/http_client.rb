@@ -37,6 +37,11 @@ module EppoClient
         [:sdkVersion, sdk_version]
       ]
     end
+
+    # Hide instance variables from logs
+    def inspect
+      "#<EppoClient::SdkParams:#{object_id}>"
+    end
   end
 
   # The HTTP Client

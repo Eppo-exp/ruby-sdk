@@ -46,7 +46,14 @@ class UnauthorizedError < StandardError
   end
 end
 
+# Configuration requestor
 module EppoClient
+  @logger = Logger.new($stderr)
+
+  def self.logger
+    @logger
+  end
+
   # ExperimentConfigurationRequestor
   class ExperimentConfigurationRequestor
     def initialize(http_client, config_store)
@@ -67,7 +74,7 @@ module EppoClient
         exp_configs.each { |exp_key, exp_config| configs[exp_key] = ExperimentConfigurationDto.new(exp_config) }
         @config_store.assign_configurations(configs)
       rescue StandardError => e
-        puts "Error retrieving assignment configurations: #{e}"
+        EppoClient.logger.error("Error retrieving assignment configurations: #{e}")
       end
       configs
     end
