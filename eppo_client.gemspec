@@ -11,9 +11,14 @@ Gem::Specification.new do |s|
     'lib/client.rb',
     'lib/config.rb',
     'lib/configuration_requestor.rb',
+    'lib/configuration_store.rb',
+    'lib/constants.rb',
     'lib/eppo_client.rb',
     'lib/http_client.rb',
+    'lib/lru_cache.rb',
     'lib/poller.rb',
+    'lib/rules.rb',
+    'lib/shard.rb',
     'lib/validation.rb'
   ]
   s.homepage    = 'https://github.com/Eppo-exp/ruby-sdk'

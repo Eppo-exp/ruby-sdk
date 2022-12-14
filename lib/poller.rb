@@ -1,34 +1,37 @@
 # frozen_string_literal: true
 
+require 'concurrent/atom'
+
 module EppoClient
   # The HTTP Client
   class Poller
     def initialize(interval_millis, jitter_millis, callback)
       @jitter_millis = jitter_millis
       @interval = interval_millis
-      @stop_event = Thread::Event.new
+      @stopped = Concurrent::Atom.new(false)
       @callback = callback
-      @thread = Thread.new { poll }
-      @thread.daemon = true
+      @thread = nil
     end
 
     def start
-      @thread.start
+      @stopped.reset(false)
+      @thread = Thread.new { poll }
     end
 
     def stop
-      @stop_event.set
+      @stopped.reset(true)
+      Thread.kill(@thread)
     end
 
     def stopped?
-      @stop_event.set?
+      @stopped.value
     end
 
     def poll
       until stopped?
         begin
           @callback.call
-        rescue StandardError => e
+        rescue SdtandardError => e
           logger.error("Unexpected error running poll task: #{e}")
           break
         end
@@ -38,7 +41,7 @@ module EppoClient
 
     def _wait_for_interval
       interval_with_jitter = @interval - rand(@jitter_millis)
-      @stop_event.wait(interval_with_jitter / 1000)
+      sleep interval_with_jitter / 1000
     end
   end
 end

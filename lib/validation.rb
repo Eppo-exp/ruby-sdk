@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# The HTTP Client
+# The helper to validate various keys
 module EppoClient
   module_function
 

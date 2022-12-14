@@ -4,7 +4,7 @@ module EppoClient
   # The base logger class to override
   class AssignmentLogger
     def log_assignment(_assignment)
-      raise(StandardError, 'log_assignment must be overriden in order to use AssignmentLogger!')
+      raise(StandardError, 'Cannot use log_assignment unless it is overridden in AssignmentLogger!')
     end
   end
 end
