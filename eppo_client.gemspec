@@ -13,11 +13,13 @@ Gem::Specification.new do |s|
     'lib/configuration_requestor.rb',
     'lib/configuration_store.rb',
     'lib/constants.rb',
+    'lib/custom_errors.rb',
     'lib/eppo_client.rb',
     'lib/http_client.rb',
     'lib/lru_cache.rb',
     'lib/poller.rb',
     'lib/rules.rb',
+    'lib/sdk_logger.rb',
     'lib/shard.rb',
     'lib/validation.rb'
   ]

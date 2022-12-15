@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "rake/testtask"
+
 GEM_NAME = 'eppo_client'
 GEM_VERSION = '0.0.0'
 
@@ -19,4 +21,8 @@ end
 
 task :clean do
   system 'rm *.gem'
+end
+
+task Rake::TestTask.new do |t|
+  t.libs << 'test'
 end

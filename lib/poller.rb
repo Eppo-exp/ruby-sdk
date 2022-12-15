@@ -1,17 +1,10 @@
 # frozen_string_literal: true
 
 require 'concurrent/atom'
-require 'logger'
 
 # The poller
 module EppoClient
-  @logger = Logger.new($stderr)
-
-  def self.logger
-    @logger
-  end
-
-  # The poller class
+  # The poller class invokes a callback and waits on repeat on a separate thread
   class Poller
     def initialize(interval_millis, jitter_millis, callback)
       @jitter_millis = jitter_millis
@@ -39,8 +32,8 @@ module EppoClient
       until stopped?
         begin
           @callback.call
-        rescue SdtandardError => e
-          EppoClient.logger.error("Unexpected error running poll task: #{e}")
+        rescue StandardError => e
+          EppoClient.logger('err').error("Unexpected error running poll task: #{e}")
           break
         end
         _wait_for_interval
@@ -53,3 +46,5 @@ module EppoClient
     end
   end
 end
+
+require 'sdk_logger'

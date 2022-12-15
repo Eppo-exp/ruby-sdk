@@ -3,16 +3,6 @@
 require 'faraday'
 require 'faraday/retry'
 
-# HTTP Request Error class
-class HttpRequestError < StandardError
-  attr_reader :status_code
-
-  def initialize(message, status_code)
-    @status_code = status_code
-    super(message)
-  end
-end
-
 REQUEST_TIMEOUT_SECONDS = 2
 # This applies only to failed DNS lookups and connection timeouts,
 # never to requests where data has made it to the server.
@@ -38,13 +28,13 @@ module EppoClient
       ]
     end
 
-    # Hide instance variables from logs
+    # Hide instance variables (specifically api_key) from logs
     def inspect
       "#<EppoClient::SdkParams:#{object_id}>"
     end
   end
 
-  # The HTTP Client
+  # The http request client with retry/timeout behavior
   class HttpClient
     attr_reader :is_unauthorized
 
@@ -78,7 +68,9 @@ module EppoClient
     private
 
     def get_http_error(status_code, resource)
-      HttpRequestError.new("HTTP #{status_code} error while requesting resource #{resource}", status_code)
+      EppoClient::HttpRequestError.new("HTTP #{status_code} error while requesting resource #{resource}", status_code)
     end
   end
 end
+
+require 'custom_errors'

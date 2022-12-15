@@ -1,16 +1,8 @@
 # frozen_string_literal: true
 
 require 'time'
-require 'logger'
 
-# The client assignment code
 module EppoClient
-  @logger = Logger.new($stdout)
-
-  def self.logger
-    @logger
-  end
-
   # The main client singleton
   class Client
     include Singleton
@@ -20,6 +12,7 @@ module EppoClient
       Client.instance
     end
 
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
     def get_assignment(subject_key, flag_key, subject_attributes)
       EppoClient.validate_not_blank('subject_key', subject_key)
       EppoClient.validate_not_blank('flag_key', flag_key)
@@ -28,7 +21,7 @@ module EppoClient
       return override unless override.nil?
 
       if experiment_config.nil? || experiment_config.enabled == false
-        EppoClient.logger.info("[Eppo SDK] No assigned variation. No active experiment or flag for key: #{flag_key}")
+        EppoClient.logger('out').info("[Eppo SDK] No assigned variation. No active experiment or flag for key: #{flag_key}")
         return nil
       end
 
@@ -37,7 +30,7 @@ module EppoClient
         experiment_config.rules.map { |rule| Rule.new(rule) }
       )
       if matched_rule.nil?
-        EppoClient.logger.info("[Eppo SDK] No assigned variation. Subject attributes do not match targeting rules: #{subject_attributes}")
+        EppoClient.logger('out').info("[Eppo SDK] No assigned variation. Subject attributes do not match targeting rules: #{subject_attributes}")
         return nil
       end
 
@@ -48,7 +41,7 @@ module EppoClient
         experiment_config.subject_shards,
         allocation['percentExposure']
       )
-        EppoClient.logger.info('[Eppo SDK] No assigned variation. Subject is not part of experiment sample population')
+        EppoClient.logger('out').info('[Eppo SDK] No assigned variation. Subject is not part of experiment sample population')
         return nil
       end
 
@@ -71,12 +64,13 @@ module EppoClient
 
       begin
         @assignment_logger.log_assignment(assignment_event)
-      rescue StandardError => e
-        EppoClient.logger.info("[Eppo SDK] Error logging assignment event: #{e}")
+      rescue EppoClient::AssignmentLoggerError => e
+        EppoClient.logger('out').info("[Eppo SDK] Error logging assignment event: #{e}")
       end
 
       assigned_variation
     end
+    # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
 
     def shutdown
       @poller.stop
@@ -97,3 +91,5 @@ end
 require 'validation'
 require 'rules'
 require 'shard'
+require 'sdk_logger'
+require 'custom_errors'

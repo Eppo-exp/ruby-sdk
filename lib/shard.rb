@@ -2,9 +2,9 @@
 
 require 'digest'
 
-# The helper for sharding logic
+# The helper module for shard logic
 module EppoClient
-  # ShardRange
+  # The class for checking if a shard is in a range
   class ShardRange
     attr_reader :start, :end
 

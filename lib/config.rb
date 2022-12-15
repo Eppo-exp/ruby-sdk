@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EppoClient
-  # Class for configuring the Eppo client singleton
+  # The class for configuring the Eppo client singleton
   class Config
     attr_reader :api_key, :assignment_logger, :base_url
 

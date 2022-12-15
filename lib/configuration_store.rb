@@ -3,7 +3,7 @@
 require 'concurrent/atomic/read_write_lock'
 
 module EppoClient
-  # Configuration store
+  # A thread safe store for the configurations to ensure that retrievals pull from a single source of truth
   class ConfigurationStore
     attr_reader :lock
 

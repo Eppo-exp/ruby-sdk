@@ -21,7 +21,7 @@ module EppoClient
   end
 
   # rubocop:disable Metrics/MethodLength
-  def init(config)
+  def init(config, assignment_logger = nil)
     config.validate
     sdk_params = EppoClient::SdkParams.new(config.api_key, 'ruby', @sdk_version)
     http_client = EppoClient::HttpClient.new(config.base_url, sdk_params.formatted)
@@ -29,7 +29,7 @@ module EppoClient
     config_store.lock.with_write_lock do
       EppoClient.initialize_client(
         EppoClient::ExperimentConfigurationRequestor.new(http_client, config_store),
-        EppoClient::AssignmentLogger.new
+        assignment_logger || EppoClient::AssignmentLogger.new
       )
     end
     @client

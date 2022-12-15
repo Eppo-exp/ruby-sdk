@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-# The helper for rules
+# The helper module for rules
 module EppoClient
   module OperatorType
     MATCHES = 'MATCHES'
