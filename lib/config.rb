@@ -15,7 +15,7 @@ module EppoClient
       EppoClient.validate_not_blank('api_key', @api_key)
     end
 
-    # Hide instance variables from logs
+    # Hide instance variables (specifically api_key) from logs
     def inspect
       "#<EppoClient::Config:#{object_id}>"
     end

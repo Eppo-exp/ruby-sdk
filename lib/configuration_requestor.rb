@@ -1,9 +1,19 @@
 # frozen_string_literal: true
 
 module EppoClient
+  # A class for the allocation object
+  class AllocationDto
+    attr_reader :percent_exposure, :variations
+
+    def initialize(percent_exposure, variations)
+      @percent_exposure = percent_exposure
+      @variations = variations
+    end
+  end
+
   # A class for the experiment configuration object
   class ExperimentConfigurationDto
-    attr_accessor :subject_shards, :enabled, :name, :overrides, :rules, :allocations
+    attr_reader :subject_shards, :enabled, :name, :overrides, :rules, :allocations
 
     def initialize(exp_config)
       @subject_shards = exp_config['subjectShards']
@@ -28,17 +38,24 @@ module EppoClient
       @config_store.retrieve_configuration(experiment_key)
     end
 
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def fetch_and_store_configurations
       configs = {}
       begin
         exp_configs = @http_client.get(EppoClient::RAC_ENDPOINT).fetch('flags', {})
-        exp_configs.each { |exp_key, exp_config| configs[exp_key] = EppoClient::ExperimentConfigurationDto.new(exp_config) }
+        exp_configs.each do |exp_key, exp_config|
+          exp_config['allocations'].each do |k, v|
+            exp_config['allocations'][k] = EppoClient::AllocationDto.new(v['percentExposure'], v['variations'])
+          end
+          configs[exp_key] = EppoClient::ExperimentConfigurationDto.new(exp_config)
+        end
         @config_store.assign_configurations(configs)
       rescue EppoClient::HttpRequestError => e
         EppoClient.logger('err').error("Error retrieving assignment configurations: #{e}")
       end
       configs
     end
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
   end
 end
 

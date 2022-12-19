@@ -21,7 +21,9 @@ module EppoClient
       return override unless override.nil?
 
       if experiment_config.nil? || experiment_config.enabled == false
-        EppoClient.logger('out').info("[Eppo SDK] No assigned variation. No active experiment or flag for key: #{flag_key}")
+        EppoClient.logger('out').info(
+          "[Eppo SDK] No assigned variation. No active experiment or flag for key: #{flag_key}"
+        )
         return nil
       end
 
@@ -30,7 +32,9 @@ module EppoClient
         experiment_config.rules.map { |rule| Rule.new(rule) }
       )
       if matched_rule.nil?
-        EppoClient.logger('out').info("[Eppo SDK] No assigned variation. Subject attributes do not match targeting rules: #{subject_attributes}")
+        EppoClient.logger('out').info(
+          "[Eppo SDK] No assigned variation. Subject attributes do not match targeting rules: #{subject_attributes}"
+        )
         return nil
       end
 
@@ -39,14 +43,16 @@ module EppoClient
         subject_key,
         flag_key,
         experiment_config.subject_shards,
-        allocation['percentExposure']
+        allocation.percent_exposure
       )
-        EppoClient.logger('out').info('[Eppo SDK] No assigned variation. Subject is not part of experiment sample population')
+        EppoClient.logger('out').info(
+          '[Eppo SDK] No assigned variation. Subject is not part of experiment sample population'
+        )
         return nil
       end
 
       shard = EppoClient.get_shard("exposure-#{subject_key}-#{flag_key}", experiment_config.subject_shards)
-      assigned_variation = allocation['variations'].find do |variation|
+      assigned_variation = allocation.variations.find do |variation|
         variation_shard_range = variation['shardRange']
         EppoClient::ShardRange.new(
           variation_shard_range['start'],
