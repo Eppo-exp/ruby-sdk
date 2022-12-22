@@ -21,11 +21,11 @@ module EppoClient
     end
 
     def formatted
-      [
-        [:apiKey, api_key],
-        [:sdkName, sdk_name],
-        [:sdkVersion, sdk_version]
-      ]
+      {
+        'apiKey' => api_key,
+        'sdkName' => sdk_name,
+        'sdkVersion' => sdk_version
+      }
     end
 
     # Hide instance variables (specifically api_key) from logs
@@ -53,12 +53,11 @@ module EppoClient
     end
 
     def get(resource)
-      conn = Faraday::Connection.new(
-        url: @base_url, params: @sdk_params.to_h, request: { timeout: REQUEST_TIMEOUT_SECONDS }
-      ) do |f|
+      conn = Faraday::Connection.new(@base_url, params: @sdk_params) do |f|
         f.request :retry, @retry_options
       end
-      response = conn.get { |req| req.url resource }
+      conn.options.timeout = REQUEST_TIMEOUT_SECONDS
+      response = conn.get(resource)
       @is_unauthorized = response.status == 401
       raise get_http_error(response.status, resource) if response.status != 200
 

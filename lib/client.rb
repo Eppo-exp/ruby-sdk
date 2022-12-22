@@ -1,6 +1,13 @@
 # frozen_string_literal: true
 
+require 'singleton'
 require 'time'
+
+require 'validation'
+require 'rules'
+require 'shard'
+require 'sdk_logger'
+require 'custom_errors'
 
 module EppoClient
   # The main client singleton
@@ -13,7 +20,7 @@ module EppoClient
     end
 
     # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-    def get_assignment(subject_key, flag_key, subject_attributes)
+    def get_assignment(subject_key, flag_key, subject_attributes: {})
       EppoClient.validate_not_blank('subject_key', subject_key)
       EppoClient.validate_not_blank('flag_key', flag_key)
       experiment_config = @config_requestor.get_configuration(flag_key)
@@ -27,10 +34,7 @@ module EppoClient
         return nil
       end
 
-      matched_rule = EppoClient.find_matching_rule(
-        subject_attributes, 
-        experiment_config.rules.map { |rule| Rule.new(rule) }
-      )
+      matched_rule = EppoClient.find_matching_rule(subject_attributes, experiment_config.rules)
       if matched_rule.nil?
         EppoClient.logger('out').info(
           "[Eppo SDK] No assigned variation. Subject attributes do not match targeting rules: #{subject_attributes}"
@@ -51,14 +55,8 @@ module EppoClient
         return nil
       end
 
-      shard = EppoClient.get_shard("exposure-#{subject_key}-#{flag_key}", experiment_config.subject_shards)
-      assigned_variation = allocation.variations.find do |variation|
-        variation_shard_range = variation['shardRange']
-        EppoClient::ShardRange.new(
-          variation_shard_range['start'],
-          variation_shard_range['end']
-        ).shard_in_range?(shard)
-      end['value']
+      shard = EppoClient.get_shard("assignment-#{subject_key}-#{flag_key}", experiment_config.subject_shards)
+      assigned_variation = allocation.variations.find { |var| var.shard_range.shard_in_range?(shard) }.value
 
       assignment_event = {
         "experiment": flag_key,
@@ -72,6 +70,8 @@ module EppoClient
         @assignment_logger.log_assignment(assignment_event)
       rescue EppoClient::AssignmentLoggerError => e
         EppoClient.logger('out').info("[Eppo SDK] Error logging assignment event: #{e}")
+      rescue StandardError => e
+        EppoClient.logger('err').info("[Eppo SDK] Error logging assignment event: #{e}")
       end
 
       assigned_variation
@@ -83,7 +83,7 @@ module EppoClient
     end
 
     def get_subject_variation_override(experiment_config, subject)
-      subject_hash = Digest::MD5.hexdigest(subject)
+      subject_hash = Digest::MD5.hexdigest(subject.to_s)
       experiment_config&.overrides && experiment_config.overrides[subject_hash]
     end
 
@@ -93,9 +93,3 @@ module EppoClient
     end
   end
 end
-
-require 'validation'
-require 'rules'
-require 'shard'
-require 'sdk_logger'
-require 'custom_errors'

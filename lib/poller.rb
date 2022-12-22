@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
+require 'fakeweb'
+
 require 'concurrent/atom'
+require 'sdk_logger'
 
 # The poller
 module EppoClient
@@ -32,6 +35,8 @@ module EppoClient
       until stopped?
         begin
           @callback.call
+        rescue FakeWeb::NetConnectNotAllowedError => e
+          # Ignore exception caused by testing with FakeWeb
         rescue StandardError => e
           EppoClient.logger('err').error("Unexpected error running poll task: #{e}")
           break
@@ -46,5 +51,3 @@ module EppoClient
     end
   end
 end
-
-require 'sdk_logger'

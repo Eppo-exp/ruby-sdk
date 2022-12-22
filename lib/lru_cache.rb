@@ -7,6 +7,7 @@ module EppoClient
   # and re-inserting a key-value pair on access moves the key to the last position. When an
   # entry is added and the cache is full, the first entry is removed.
   class LRUCache
+    attr_reader :cache
     # Creates a new LRUCache that can hold +size+ entries.
     def initialize(size)
       @size = size

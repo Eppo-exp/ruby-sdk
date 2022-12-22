@@ -5,7 +5,7 @@ require 'concurrent/atomic/read_write_lock'
 module EppoClient
   # A thread safe store for the configurations to ensure that retrievals pull from a single source of truth
   class ConfigurationStore
-    attr_reader :lock
+    attr_reader :lock, :cache
 
     def initialize(max_size)
       @cache = EppoClient::LRUCache.new(max_size)

@@ -12,7 +12,7 @@ module EppoClient
     NOT_ONE_OF = 'NOT_ONE_OF'
   end
 
-  # Condition
+  # A class for the Condition object
   class Condition
     attr_accessor :operator, :attribute, :value
 
@@ -23,13 +23,13 @@ module EppoClient
     end
   end
 
-  # Rule
+  # A class for the Rule object
   class Rule
     attr_accessor :allocation_key, :conditions
 
-    def initialize(rule)
-      @allocation_key = rule['allocationKey']
-      @conditions = rule['conditions']
+    def initialize(allocation_key:, conditions:)
+      @allocation_key = allocation_key
+      @conditions = conditions
     end
   end
 
@@ -37,6 +37,7 @@ module EppoClient
     rules.each do |rule|
       return rule if matches_rule(subject_attributes, rule)
     end
+    nil
   end
 
   def matches_rule(subject_attributes, rule)
@@ -48,16 +49,16 @@ module EppoClient
 
   # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
   def evaluate_condition(subject_attributes, condition)
-    subject_value = subject_attributes[condition['attribute']]
+    subject_value = subject_attributes[condition.attribute]
     return false if subject_value.nil?
 
     case condition.operator
     when OperatorType::MATCHES
-      !!(Regexp.new(condition.value) =~ subject_value)
+      !!(Regexp.new(condition.value) =~ subject_value.to_s)
     when OperatorType::ONE_OF
-      condition.value.map(&:downcase).include?(subject_value.downcase)
+      condition.value.map(&:downcase).include?(subject_value.to_s.downcase)
     when OperatorType::NOT_ONE_OF
-      !condition.value.map(&:downcase).include?(subject_value.downcase)
+      !condition.value.map(&:downcase).include?(subject_value.to_s.downcase)
     else
       subject_value.is_a?(Numeric) && evaluate_numeric_condition(subject_value, condition)
     end
@@ -65,7 +66,7 @@ module EppoClient
   # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
 
   # rubocop:disable Metrics/MethodLength
-  def evaluate_numeric_condition(subject_value, condition) 
+  def evaluate_numeric_condition(subject_value, condition)
     case condition.operator
     when OperatorType::GT
       subject_value > condition.value

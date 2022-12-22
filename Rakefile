@@ -15,6 +15,10 @@ task install: :build do
   system "gem install #{GEM_NAME}-#{GEM_VERSION}.gem"
 end
 
+task devinstall: :build do
+  system "gem install #{GEM_NAME}-#{GEM_VERSION}.gem --dev"
+end
+
 task publish: :build do
   system "gem push #{GEM_NAME}-#{GEM_VERSION}.gem"
 end
@@ -23,16 +27,12 @@ task :clean do
   system 'rm *.gem'
 end
 
-test_data_dir = 'test/test-data/'
+test_data_dir = 'spec/test-data/'
 file 'test-data' do
   rm_rf test_data_dir
-  mkdir test_data_dir
+  mkdir_p test_data_dir
   sh "gsutil cp gs://sdk-test-data/rac-experiments-v2.json #{test_data_dir}"
   sh "gsutil cp -r gs://sdk-test-data/assignment-v2 #{test_data_dir}"
-end
-
-task :test_data do
-  system 'rm *.gem'
 end
 
 RSpec::Core::RakeTask.new(:test) do |task|
@@ -40,3 +40,5 @@ RSpec::Core::RakeTask.new(:test) do |task|
   task.pattern = "#{root_dir}/spec/*_spec.rb"
   task.verbose = false
 end
+
+task test: [:devinstall, 'test-data']
