@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'fakeweb'
+require 'webmock/rspec'
 
 require 'client'
 require 'eppo_client'
@@ -25,13 +25,12 @@ MOCK_BASE_URL = 'http://localhost:4001/api'
 # rubocop:disable Metrics/BlockLength
 describe EppoClient::Client do
   before(:each) do
-    FakeWeb.allow_net_connect = false
-    FakeWeb.register_uri(
+    stub_request(
       :get,
-      "#{MOCK_BASE_URL}/randomized_assignment/v2/config?apiKey=dummy&sdkName=ruby&sdkVersion=1.1.1",
+      "#{MOCK_BASE_URL}/randomized_assignment/v2/config?apiKey=dummy&sdkName=ruby&sdkVersion=1.1.1"
+    ).to_return(
       body: File.read('spec/test-data/rac-experiments-v2.json')
     )
-    expect_any_instance_of(FakeWeb::StubSocket).to receive(:close)
     @client = EppoClient.init(
       EppoClient::Config.new(
         'dummy',
@@ -44,12 +43,11 @@ describe EppoClient::Client do
 
   after(:each) do
     @client.shutdown
-    FakeWeb.allow_net_connect = true
   end
 
   it 'tests assigning a blank experiment' do
     expect { @client.get_assignment('subject-1', '') }.to raise_error(
-      EppoClient::InvalidValueError, 'InvalidValueError: flag_key cannot be blank'
+      EppoClient::InvalidValueError, 'InvalidValueError: flag_or_experiment_key cannot be blank'
     )
   end
 
@@ -179,10 +177,10 @@ describe EppoClient::Client do
     client = EppoClient.initialize_client(mock_config_requestor, EppoClient::AssignmentLogger.new)
     expect(client.get_assignment('user-1', 'experiment-key-1')).to be_nil
     expect(
-      client.get_assignment('user-1', 'experiment-key-1', subject_attributes: { 'email' => 'test@example.com' })
+      client.get_assignment('user-1', 'experiment-key-1', { 'email' => 'test@example.com' })
     ).to be_nil
     expect(
-      client.get_assignment('user1', 'experiment-key-1', subject_attributes: { 'email' => 'test@eppo.com' })
+      client.get_assignment('user1', 'experiment-key-1', { 'email' => 'test@eppo.com' })
     ).to eq('control')
   end
 
@@ -265,7 +263,7 @@ describe EppoClient::Client do
       test_case.fetch('subjectsWithAttributes', []).each do |subject|
         assignments.push(
           client.get_assignment(
-            subject['subjectKey'], test_case['experiment'], subject_attributes: subject['subjectAttributes']
+            subject['subjectKey'], test_case['experiment'], subject['subjectAttributes']
           )
         )
       end

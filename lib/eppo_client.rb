@@ -11,24 +11,21 @@ require 'configuration_store'
 
 # This module scopes all the client SDK's classes and functions
 module EppoClient
-  attr_reader :client
-
   @sdk_version = '1.1.1'
-  @client = nil
 
   # rubocop:disable Metrics/MethodLength
   def initialize_client(config_requestor, assignment_logger)
-    !@client.nil? && @client.shutdown
-    @client = EppoClient::Client.instance
-    @client.config_requestor = config_requestor
-    @client.assignment_logger = assignment_logger
-    @client.poller = EppoClient::Poller.new(
+    client = EppoClient::Client.instance
+    !client.poller.nil? && client.shutdown
+    client.config_requestor = config_requestor
+    client.assignment_logger = assignment_logger
+    client.poller = EppoClient::Poller.new(
       EppoClient::POLL_INTERVAL_MILLIS,
       EppoClient::POLL_JITTER_MILLIS,
-      proc { @client.config_requestor.fetch_and_store_configurations }
+      proc { client.config_requestor.fetch_and_store_configurations }
     )
-    @client.poller.start
-    @client
+    client.poller.start
+    client
   end
   # rubocop:enable Metrics/MethodLength
 

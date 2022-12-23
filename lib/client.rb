@@ -20,16 +20,16 @@ module EppoClient
     end
 
     # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
-    def get_assignment(subject_key, flag_key, subject_attributes: {})
+    def get_assignment(subject_key, flag_or_experiment_key, subject_attributes = {})
       EppoClient.validate_not_blank('subject_key', subject_key)
-      EppoClient.validate_not_blank('flag_key', flag_key)
-      experiment_config = @config_requestor.get_configuration(flag_key)
+      EppoClient.validate_not_blank('flag_or_experiment_key', flag_or_experiment_key)
+      experiment_config = @config_requestor.get_configuration(flag_or_experiment_key)
       override = get_subject_variation_override(experiment_config, subject_key)
       return override unless override.nil?
 
       if experiment_config.nil? || experiment_config.enabled == false
         EppoClient.logger('out').info(
-          "[Eppo SDK] No assigned variation. No active experiment or flag for key: #{flag_key}"
+          "[Eppo SDK] No assigned variation. No active experiment or flag for key: #{flag_or_experiment_key}"
         )
         return nil
       end
@@ -45,7 +45,7 @@ module EppoClient
       allocation = experiment_config.allocations[matched_rule.allocation_key]
       unless in_experiment_sample?(
         subject_key,
-        flag_key,
+        flag_or_experiment_key,
         experiment_config.subject_shards,
         allocation.percent_exposure
       )
@@ -55,11 +55,11 @@ module EppoClient
         return nil
       end
 
-      shard = EppoClient.get_shard("assignment-#{subject_key}-#{flag_key}", experiment_config.subject_shards)
+      shard = EppoClient.get_shard("assignment-#{subject_key}-#{flag_or_experiment_key}", experiment_config.subject_shards)
       assigned_variation = allocation.variations.find { |var| var.shard_range.shard_in_range?(shard) }.value
 
       assignment_event = {
-        "experiment": flag_key,
+        "experiment": flag_or_experiment_key,
         "variation": assigned_variation,
         "subject": subject_key,
         "timestamp": Time.now.utc.iso8601,

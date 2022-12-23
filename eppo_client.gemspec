@@ -28,8 +28,9 @@ Gem::Specification.new do |s|
   s.add_dependency 'concurrent-ruby', '~> 1.1', '>= 1.1.9'
   s.add_dependency 'faraday', '~> 2.7', '>= 2.7.1'
   s.add_dependency 'faraday-retry', '~> 2.0', '>= 2.0.0'
-  s.add_development_dependency 'fakeweb', '~> 1.3'
   s.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   s.add_development_dependency 'rspec', '~> 3.12', '>= 3.12.0'
+  s.add_development_dependency 'rubocop', '~> 1.41'
+  s.add_development_dependency 'webmock', '~> 3.18', '>= 3.18.1'
   s.required_ruby_version = '>=3.1.2'
 end

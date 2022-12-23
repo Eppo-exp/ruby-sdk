@@ -4,7 +4,7 @@ require 'digest'
 
 # The helper module for shard logic
 module EppoClient
-  # The class for checking if a shard is in a range
+  # A class for checking if a shard is in a range
   class ShardRange
     attr_reader :start, :end
 

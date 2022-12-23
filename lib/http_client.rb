@@ -11,7 +11,6 @@ MAX_RETRIES = 3
 module EppoClient
   # The SDK params object
   class SdkParams
-    # attributes are camelCase because that's what the backend endpoint expects
     attr_reader :api_key, :sdk_name, :sdk_version
 
     def initialize(api_key, sdk_name, sdk_version)
@@ -20,6 +19,7 @@ module EppoClient
       @sdk_version = sdk_version
     end
 
+    # attributes are camelCase because that's what the backend endpoint expects
     def formatted
       {
         'apiKey' => api_key,

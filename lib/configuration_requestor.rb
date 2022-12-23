@@ -40,7 +40,7 @@ module EppoClient
     end
   end
 
-  # The class for requesting experiment configs
+  # A class for getting exp configs from the local cache or API
   class ExperimentConfigurationRequestor
 
     attr_reader :config_store
