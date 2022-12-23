@@ -69,7 +69,7 @@ module EppoClient
       begin
         @assignment_logger.log_assignment(assignment_event)
       rescue EppoClient::AssignmentLoggerError => e
-        EppoClient.logger('out').info("[Eppo SDK] Error logging assignment event: #{e}")
+        # This error means that log_assignment was not set up. This is okay to ignore.
       rescue StandardError => e
         EppoClient.logger('err').info("[Eppo SDK] Error logging assignment event: #{e}")
       end
