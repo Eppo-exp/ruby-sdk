@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'custom_errors'
+
 module EppoClient
   # The base assignment logger class to override
   class AssignmentLogger

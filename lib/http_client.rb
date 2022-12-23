@@ -3,6 +3,8 @@
 require 'faraday'
 require 'faraday/retry'
 
+require 'custom_errors'
+
 REQUEST_TIMEOUT_SECONDS = 2
 # This applies only to failed DNS lookups and connection timeouts,
 # never to requests where data has made it to the server.
@@ -71,5 +73,3 @@ module EppoClient
     end
   end
 end
-
-require 'custom_errors'

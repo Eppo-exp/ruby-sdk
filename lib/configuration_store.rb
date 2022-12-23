@@ -2,6 +2,8 @@
 
 require 'concurrent/atomic/read_write_lock'
 
+require 'lru_cache'
+
 module EppoClient
   # A thread safe store for the configurations to ensure that retrievals pull from a single source of truth
   class ConfigurationStore
@@ -25,5 +27,3 @@ module EppoClient
     end
   end
 end
-
-require 'lru_cache'
