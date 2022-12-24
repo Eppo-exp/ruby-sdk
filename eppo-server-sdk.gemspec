@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |s|
-  s.name        = 'eppo_client'
+  s.name        = 'eppo-server-sdk'
   s.version     = '0.0.0'
   s.summary     = 'Eppo SDK for Ruby'
   s.authors     = ['Eppo']

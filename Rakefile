@@ -2,7 +2,7 @@
 
 require 'rspec/core/rake_task'
 
-GEM_NAME = 'eppo_client'
+GEM_NAME = 'eppo-server-sdk'
 GEM_VERSION = '0.0.0'
 
 task default: :build
