@@ -89,7 +89,7 @@ module EppoClient
         end
         @config_store.assign_configurations(configs)
       rescue EppoClient::HttpRequestError => e
-        EppoClient.logger('err').error("Error retrieving assignment configurations: #{e}")
+        EppoClient.logger.error("Error retrieving assignment configurations: #{e}")
       end
       configs
     end

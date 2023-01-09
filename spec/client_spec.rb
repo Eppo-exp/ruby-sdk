@@ -141,7 +141,7 @@ describe EppoClient::Client do
     mock_logger = double('mock logger')
     allow(mock_logger).to receive(:log_assignment).and_raise('logging error')
     client = EppoClient.initialize_client(mock_config_requestor, mock_logger)
-    expect(client.get_assignment('user-1', 'experiment-key-1')).to eq('control')
+    expect(client.get_assignment('user-1', 'experiment-key-1', {}, Logger::FATAL)).to eq('control')
   end
 
   it 'tests assign subject with with attributes and rules' do

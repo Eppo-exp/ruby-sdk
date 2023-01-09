@@ -34,7 +34,7 @@ module EppoClient
         begin
           @callback.call
         rescue StandardError => e
-          EppoClient.logger('err').error("Unexpected error running poll task: #{e}")
+          EppoClient.logger.error("Unexpected error running poll task: #{e}")
           break
         end
         _wait_for_interval

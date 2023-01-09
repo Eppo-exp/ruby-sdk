@@ -41,4 +41,5 @@ RSpec::Core::RakeTask.new(:test) do |task|
   task.verbose = false
 end
 
-task test: [:devinstall, 'test-data']
+task test: :devinstall
+task test_refreshed_data: [:devinstall, 'test-data']

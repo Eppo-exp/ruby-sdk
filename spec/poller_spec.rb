@@ -19,7 +19,6 @@ describe EppoClient::Poller do
     allow(mock_callback).to receive(:call).and_throw(:boom)
     allow(mock_logger).to receive(:error)
     allow(EppoClient).to receive(:logger).and_return(mock_logger)
-    expect(EppoClient).to receive(:logger).with('err')
     expect(mock_callback).to receive(:call).once
     expect(mock_logger).to receive(:error).once.with('Unexpected error running poll task: uncaught throw :boom')
     task = EppoClient::Poller.new(10, 1, mock_callback)

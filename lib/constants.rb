@@ -1,6 +1,11 @@
 # frozen_string_literal: true
 
+require 'logger'
+
 module EppoClient
+  # default level for logging
+  DEFAULT_LOGGER_LEVEL = Logger::INFO
+
   # configuration cache constants
   MAX_CACHE_ENTRIES = 1000 # arbitrary; the caching library requires a max limit
 
