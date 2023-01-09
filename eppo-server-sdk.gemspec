@@ -29,9 +29,17 @@ Gem::Specification.new do |s|
   s.add_dependency 'concurrent-ruby', '~> 1.1', '>= 1.1.9'
   s.add_dependency 'faraday', '~> 2.7', '>= 2.7.1'
   s.add_dependency 'faraday-retry', '~> 2.0', '>= 2.0.0'
+  s.add_dependency 'parse_gemspec', '~> 1.0', '>= 1.0.0'
   s.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   s.add_development_dependency 'rspec', '~> 3.12', '>= 3.12.0'
   s.add_development_dependency 'rubocop', '~> 1.41'
   s.add_development_dependency 'webmock', '~> 3.18', '>= 3.18.1'
   s.required_ruby_version = '>=3.1.2'
+  s.metadata = {
+    'bug_tracker_uri' => 'https://github.com/Eppo-exp/ruby-sdk/issues',
+    'documentation_uri' => 'https://docs.geteppo.com/feature-flags/sdks/server-sdks/ruby/',
+    'homepage_uri' => 'https://geteppo.com/',
+    'source_code_uri' => 'https://github.com/Eppo-exp/ruby-sdk',
+    'wiki_uri' => 'https://github.com/Eppo-exp/ruby-sdk/wiki'
+  }
 end
