@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'sdk_logger'
 require 'custom_errors'
 require 'constants'
 
@@ -89,7 +88,7 @@ module EppoClient
         end
         @config_store.assign_configurations(configs)
       rescue EppoClient::HttpRequestError => e
-        EppoClient.logger.error("Error retrieving assignment configurations: #{e}")
+        Logger.new($stdout).error("Error retrieving assignment configurations: #{e}")
       end
       configs
     end

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'concurrent/atom'
-require 'sdk_logger'
 
 # The poller
 module EppoClient
@@ -34,7 +33,7 @@ module EppoClient
         begin
           @callback.call
         rescue StandardError => e
-          EppoClient.logger.error("Unexpected error running poll task: #{e}")
+          Logger.new($stdout).error("Unexpected error running poll task: #{e}")
           break
         end
         _wait_for_interval

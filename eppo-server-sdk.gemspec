@@ -20,7 +20,6 @@ Gem::Specification.new do |s|
     'lib/lru_cache.rb',
     'lib/poller.rb',
     'lib/rules.rb',
-    'lib/sdk_logger.rb',
     'lib/shard.rb',
     'lib/validation.rb'
   ]
