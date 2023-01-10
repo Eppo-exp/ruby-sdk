@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/BlockLength
 Gem::Specification.new do |s|
   s.name        = 'eppo-server-sdk'
   s.version     = '0.0.1'
@@ -33,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rspec', '~> 3.12', '>= 3.12.0'
   s.add_development_dependency 'rubocop', '~> 1.41'
   s.add_development_dependency 'webmock', '~> 3.18', '>= 3.18.1'
-  s.required_ruby_version = '>=3.1.2'
+  s.required_ruby_version = '>= 3.1.2'
   s.metadata = {
     'bug_tracker_uri' => 'https://github.com/Eppo-exp/ruby-sdk/issues',
     'documentation_uri' => 'https://docs.geteppo.com/feature-flags/sdks/server-sdks/ruby/',
