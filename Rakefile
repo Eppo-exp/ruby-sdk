@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 require 'rspec/core/rake_task'
+require 'parse_gemspec'
 
 GEM_NAME = 'eppo-server-sdk'
-GEM_VERSION = '0.0.1'
+GEM_VERSION = ParseGemspec::Specification.load('eppo-server-sdk.gemspec').to_hash_object[:version]
 
 task default: :build
 
