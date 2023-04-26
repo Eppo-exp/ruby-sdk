@@ -16,5 +16,5 @@ module EppoClient
   POLL_INTERVAL_MILLIS = 5 * MINUTE_MILLIS
 
   # the configs endpoint
-  RAC_ENDPOINT = 'randomized_assignment/v2/config'
+  RAC_ENDPOINT = 'randomized_assignment/v3/config'
 end

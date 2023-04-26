@@ -8,7 +8,7 @@ module EppoClient
   class Config
     attr_reader :api_key, :assignment_logger, :base_url
 
-    def initialize(api_key, assignment_logger: AssignmentLogger.new, base_url: 'https://eppo.cloud/api')
+    def initialize(api_key, assignment_logger: AssignmentLogger.new, base_url: 'https://fscdn.eppo.cloud/api')
       @api_key = api_key
       @assignment_logger = assignment_logger
       @base_url = base_url
