@@ -27,7 +27,7 @@ describe EppoClient::Client do
   before(:each) do
     stub_request(
       :get,
-      "#{MOCK_BASE_URL}/randomized_assignment/v2/config?apiKey=dummy&sdkName=ruby&sdkVersion=0.0.2"
+      "#{MOCK_BASE_URL}/randomized_assignment/v3/config?apiKey=dummy&sdkName=ruby&sdkVersion=0.2.0"
     ).to_return(
       body: File.read('spec/test-data/rac-experiments-v2.json')
     )
