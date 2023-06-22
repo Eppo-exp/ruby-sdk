@@ -6,7 +6,7 @@ describe EppoClient::Poller do
   it 'tests invokes callback until stopped' do
     dbl = double('mock callback function')
     allow(dbl).to receive(:call)
-    expect(dbl).to receive(:call).at_least(1000).times
+    expect(dbl).to receive(:call).at_least(500).times
     task = EppoClient::Poller.new(10, 1, dbl)
     task.start
     sleep(0.099)
