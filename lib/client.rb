@@ -66,7 +66,9 @@ module EppoClient
       assigned_variation = allocation.variations.find { |var| var.shard_range.shard_in_range?(shard) }.value
 
       assignment_event = {
-        "experiment": flag_key,
+        "allocation": matched_rule.allocation_key,
+        "experiment": "#{flag_key}-#{matched_rule.allocation_key}",
+        "featureFlag": flag_key,
         "variation": assigned_variation,
         "subject": subject_key,
         "timestamp": Time.now.utc.iso8601,
