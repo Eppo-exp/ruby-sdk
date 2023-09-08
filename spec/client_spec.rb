@@ -47,7 +47,7 @@ describe EppoClient::Client do
 
   it 'tests assigning a blank experiment' do
     expect { @client.get_assignment('subject-1', '') }.to raise_error(
-      EppoClient::InvalidValueError, 'InvalidValueError: flag_or_experiment_key cannot be blank'
+      EppoClient::InvalidValueError, 'InvalidValueError: flag_key cannot be blank'
     )
   end
 
