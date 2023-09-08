@@ -29,7 +29,7 @@ describe EppoClient::Client do
       :get,
       "#{MOCK_BASE_URL}/randomized_assignment/v3/config?apiKey=dummy&sdkName=ruby&sdkVersion=0.2.0"
     ).to_return(
-      body: File.read('spec/test-data/rac-experiments-v2.json')
+      body: File.read('spec/test-data/rac-experiments-v3.json')
     )
     @client = EppoClient.init(
       EppoClient::Config.new(
