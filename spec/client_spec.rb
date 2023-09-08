@@ -256,13 +256,19 @@ describe EppoClient::Client do
     it 'tests assign subject in sample' do
       puts "---- Test case for #{test_case['experiment']} Experiment"
       client = EppoClient::Client.instance
+      get_typed_assignment = {
+        'string' => client.method(:get_assignment),
+        'numeric' => client.method(:get_assignment),
+        'boolean' => client.method(:get_assignment),
+        'json' => client.method(:get_assignment)
+      }[test_case['valueType']]
       assignments = []
       test_case.fetch('subjects', []).each do |subject_key|
-        assignments.push(client.get_assignment(subject_key, test_case['experiment']))
+        assignments.push(get_typed_assignment.call(subject_key, test_case['experiment']))
       end
       test_case.fetch('subjectsWithAttributes', []).each do |subject|
         assignments.push(
-          client.get_assignment(
+          get_typed_assignment.call(
             subject['subjectKey'], test_case['experiment'], subject['subjectAttributes']
           )
         )
