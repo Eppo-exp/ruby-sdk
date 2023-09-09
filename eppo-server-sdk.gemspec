@@ -30,7 +30,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'parse_gemspec', '~> 1.0', '>= 1.0.0'
   s.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   s.add_development_dependency 'rspec', '~> 3.12', '>= 3.12.0'
-  s.add_development_dependency 'rubocop', '~> 1.41'
+  s.add_development_dependency 'rubocop', '~> 0.82.0'
   s.add_development_dependency 'webmock', '~> 3.18', '>= 3.18.1'
   s.required_ruby_version = '>= 3.0.6'
   s.metadata = {
