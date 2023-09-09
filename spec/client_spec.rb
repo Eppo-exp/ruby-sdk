@@ -269,10 +269,10 @@ describe EppoClient::Client do
       puts "---- Test case for #{test_case['experiment']} Experiment"
       client = EppoClient::Client.instance
       get_typed_assignment = {
-        'string' => client.method(:get_assignment),
-        'numeric' => client.method(:get_assignment),
-        'boolean' => client.method(:get_assignment),
-        'json' => client.method(:get_assignment)
+        'string' => client.method(:get_string_assignment),
+        'numeric' => client.method(:get_numeric_assignment),
+        'boolean' => client.method(:get_boolean_assignment),
+        'json' => client.method(:get_json_string_assignment)
       }[test_case['valueType']]
       assignments = []
       test_case.fetch('subjects', []).each do |subject_key|
