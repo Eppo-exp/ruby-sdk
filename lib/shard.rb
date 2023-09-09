@@ -18,6 +18,8 @@ module EppoClient
     end
   end
 
+  module_function
+
   def get_shard(input, subject_shards)
     hash_output = Digest::MD5.hexdigest(input)
     # get the first 4 bytes of the md5 hex string and parse it using base 16
@@ -25,6 +27,4 @@ module EppoClient
     int_from_hash = hash_output[0...8].to_i(16)
     int_from_hash % subject_shards
   end
-
-  module_function :get_shard
 end

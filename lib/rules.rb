@@ -47,7 +47,7 @@ module EppoClient
     true
   end
 
-  # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+  # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
   def evaluate_condition(subject_attributes, condition)
     subject_value = subject_attributes[condition.attribute]
     return false if subject_value.nil?
@@ -63,7 +63,7 @@ module EppoClient
       subject_value.is_a?(Numeric) && evaluate_numeric_condition(subject_value, condition)
     end
   end
-  # rubocop:enable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+  # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
 
   # rubocop:disable Metrics/MethodLength
   def evaluate_numeric_condition(subject_value, condition)
@@ -82,5 +82,6 @@ module EppoClient
   end
   # rubocop:enable Metrics/MethodLength
 
-  module_function :find_matching_rule, :matches_rule, :evaluate_condition, :evaluate_numeric_condition
+  module_function :find_matching_rule, :matches_rule, :evaluate_condition,
+                  :evaluate_numeric_condition
 end

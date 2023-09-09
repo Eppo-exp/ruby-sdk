@@ -12,6 +12,7 @@ require 'variation_type'
 
 module EppoClient
   # The main client singleton
+  # rubocop:disable Metrics/ClassLength
   class Client
     extend Gem::Deprecate
     include Singleton
@@ -30,7 +31,8 @@ module EppoClient
       logger = Logger.new($stdout)
       logger.level = log_level
       assigned_variation = get_assignment_variation(
-        subject_key, flag_key, subject_attributes, EppoClient::VariationType::STRING_TYPE, logger
+        subject_key, flag_key, subject_attributes,
+        EppoClient::VariationType::STRING_TYPE, logger
       )
       assigned_variation&.typed_value
     end
@@ -44,7 +46,8 @@ module EppoClient
       logger = Logger.new($stdout)
       logger.level = log_level
       assigned_variation = get_assignment_variation(
-        subject_key, flag_key, subject_attributes, EppoClient::VariationType::NUMERIC_TYPE, logger
+        subject_key, flag_key, subject_attributes,
+        EppoClient::VariationType::NUMERIC_TYPE, logger
       )
       assigned_variation&.typed_value
     end
@@ -58,7 +61,8 @@ module EppoClient
       logger = Logger.new($stdout)
       logger.level = log_level
       assigned_variation = get_assignment_variation(
-        subject_key, flag_key, subject_attributes, EppoClient::VariationType::BOOLEAN_TYPE, logger
+        subject_key, flag_key, subject_attributes,
+        EppoClient::VariationType::BOOLEAN_TYPE, logger
       )
       assigned_variation&.typed_value
     end
@@ -72,7 +76,8 @@ module EppoClient
       logger = Logger.new($stdout)
       logger.level = log_level
       assigned_variation = get_assignment_variation(
-        subject_key, flag_key, subject_attributes, EppoClient::VariationType::JSON_TYPE, logger
+        subject_key, flag_key, subject_attributes,
+        EppoClient::VariationType::JSON_TYPE, logger
       )
       assigned_variation&.typed_value
     end
@@ -86,7 +91,8 @@ module EppoClient
       logger = Logger.new($stdout)
       logger.level = log_level
       assigned_variation = get_assignment_variation(
-        subject_key, flag_key, subject_attributes, EppoClient::VariationType::JSON_TYPE, logger
+        subject_key, flag_key, subject_attributes,
+        EppoClient::VariationType::JSON_TYPE, logger
       )
       assigned_variation&.value
     end
@@ -99,7 +105,9 @@ module EppoClient
     )
       logger = Logger.new($stdout)
       logger.level = log_level
-      assigned_variation = get_assignment_variation(subject_key, flag_key, subject_attributes, nil, logger)
+      assigned_variation = get_assignment_variation(subject_key, flag_key,
+                                                    subject_attributes, nil,
+                                                    logger)
       assigned_variation&.value
     end
     deprecate :get_assignment, 'the get_<typed>_assignment methods', 2024, 1
@@ -118,7 +126,10 @@ module EppoClient
       override = get_subject_variation_override(experiment_config, subject_key)
       unless override.nil?
         unless expected_variation_type.nil?
-          variation_is_expected_type = EppoClient::VariationType.expected_type?(override, expected_variation_type)
+          variation_is_expected_type =
+            EppoClient::VariationType.expected_type?(
+              override, expected_variation_type
+            )
           return nil unless variation_is_expected_type
         end
         return override
@@ -126,7 +137,8 @@ module EppoClient
 
       if experiment_config.nil? || experiment_config.enabled == false
         logger.debug(
-          "[Eppo SDK] No assigned variation. No active experiment or flag for key: #{flag_key}"
+          '[Eppo SDK] No assigned variation. No active experiment or flag for '\
+          "key: #{flag_key}"
         )
         return nil
       end
@@ -134,7 +146,8 @@ module EppoClient
       matched_rule = EppoClient.find_matching_rule(subject_attributes, experiment_config.rules)
       if matched_rule.nil?
         logger.debug(
-          "[Eppo SDK] No assigned variation. Subject attributes do not match targeting rules: #{subject_attributes}"
+          '[Eppo SDK] No assigned variation. Subject attributes do not match '\
+          "targeting rules: #{subject_attributes}"
         )
         return nil
       end
@@ -147,13 +160,18 @@ module EppoClient
         allocation.percent_exposure
       )
         logger.debug(
-          '[Eppo SDK] No assigned variation. Subject is not part of experiment sample population'
+          '[Eppo SDK] No assigned variation. Subject is not part of experiment'\
+          ' sample population'
         )
         return nil
       end
 
-      shard = EppoClient.get_shard("assignment-#{subject_key}-#{flag_key}", experiment_config.subject_shards)
-      assigned_variation = allocation.variations.find { |var| var.shard_range.shard_in_range?(shard) }
+      shard = EppoClient.get_shard(
+        "assignment-#{subject_key}-#{flag_key}", experiment_config.subject_shards
+      )
+      assigned_variation = allocation.variations.find do |var|
+        var.shard_range.shard_in_range?(shard)
+      end
 
       assigned_variation_value_to_log = nil
       unless assigned_variation.nil?
@@ -179,7 +197,7 @@ module EppoClient
       begin
         @assignment_logger.log_assignment(assignment_event)
       rescue EppoClient::AssignmentLoggerError => e
-        # This error means that log_assignment was not set up. This is okay to ignore.
+        # Error means log_assignment was not set up. This is okay to ignore.
       rescue StandardError => e
         logger.error("[Eppo SDK] Error logging assignment event: #{e}")
       end
@@ -192,9 +210,11 @@ module EppoClient
       @poller.stop
     end
 
+    # rubocop:disable Metrics/MethodLength
     def get_subject_variation_override(experiment_config, subject)
       subject_hash = Digest::MD5.hexdigest(subject.to_s)
-      if experiment_config&.overrides && experiment_config.overrides[subject_hash] &&
+      if experiment_config&.overrides &&
+         experiment_config.overrides[subject_hash] &&
          experiment_config.typed_overrides[subject_hash]
         EppoClient::VariationDto.new(
           'override',
@@ -204,10 +224,14 @@ module EppoClient
         )
       end
     end
+    # rubocop:enable Metrics/MethodLength
 
-    def in_experiment_sample?(subject, experiment_key, subject_shards, percent_exposure)
-      shard = EppoClient.get_shard("exposure-#{subject}-#{experiment_key}", subject_shards)
+    def in_experiment_sample?(subject, experiment_key, subject_shards,
+                              percent_exposure)
+      shard = EppoClient.get_shard("exposure-#{subject}-#{experiment_key}",
+                                   subject_shards)
       shard <= percent_exposure * subject_shards
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

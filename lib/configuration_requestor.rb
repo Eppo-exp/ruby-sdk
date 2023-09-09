@@ -28,7 +28,8 @@ module EppoClient
 
   # A class for the experiment configuration object
   class ExperimentConfigurationDto
-    attr_reader :subject_shards, :enabled, :name, :overrides, :typed_overrides, :rules, :allocations
+    attr_reader :subject_shards, :enabled, :name, :overrides,
+                :typed_overrides, :rules, :allocations
 
     def initialize(exp_config)
       @subject_shards = exp_config['subjectShards']
@@ -51,7 +52,8 @@ module EppoClient
     end
 
     def get_configuration(experiment_key)
-      @http_client.is_unauthorized && raise(EppoClient::UnauthorizedError, 'please check your API key')
+      @http_client.is_unauthorized && raise(EppoClient::UnauthorizedError,
+                                            'please check your API key')
       @config_store.retrieve_configuration(experiment_key)
     end
 
@@ -59,7 +61,10 @@ module EppoClient
     def fetch_and_store_configurations
       configs = {}
       begin
-        exp_configs = @http_client.get(EppoClient::RAC_ENDPOINT).fetch('flags', {})
+        exp_configs = @http_client.get(EppoClient::RAC_ENDPOINT).fetch(
+          'flags', {}
+        )
+        # rubocop: disable Metrics/BlockLength
         exp_configs.each do |exp_key, exp_config|
           exp_config['allocations'].each do |k, v|
             exp_config['allocations'][k] = EppoClient::AllocationDto.new(
@@ -67,7 +72,8 @@ module EppoClient
               v['variations'].map do |var|
                 EppoClient::VariationDto.new(
                   var['name'], var['value'], var['typedValue'],
-                  EppoClient::ShardRange.new(var['shardRange']['start'], var['shardRange']['end'])
+                  EppoClient::ShardRange.new(var['shardRange']['start'],
+                                             var['shardRange']['end'])
                 )
               end
             )
@@ -84,11 +90,16 @@ module EppoClient
               allocation_key: rule['allocationKey']
             )
           end
-          configs[exp_key] = EppoClient::ExperimentConfigurationDto.new(exp_config)
+          configs[exp_key] = EppoClient::ExperimentConfigurationDto.new(
+            exp_config
+          )
         end
+        # rubocop: enable Metrics/BlockLength
         @config_store.assign_configurations(configs)
       rescue EppoClient::HttpRequestError => e
-        Logger.new($stdout).error("Error retrieving assignment configurations: #{e}")
+        Logger.new($stdout).error(
+          "Error retrieving assignment configurations: #{e}"
+        )
       end
       configs
     end
