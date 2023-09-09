@@ -19,7 +19,6 @@ module EppoClient
       Client.instance
     end
 
-    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength, Metrics/PerceivedComplexity
     def get_assignment(
       subject_key,
       flag_key,
@@ -28,6 +27,17 @@ module EppoClient
     )
       logger = Logger.new($stdout)
       logger.level = log_level
+      assigned_variation = get_assignment_variation(subject_key, flag_key, subject_attributes, logger)
+      assigned_variation&.value
+    end
+
+    # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/MethodLength
+    def get_assignment_variation(
+      subject_key,
+      flag_key,
+      subject_attributes,
+      logger
+    )
       EppoClient.validate_not_blank('subject_key', subject_key)
       EppoClient.validate_not_blank('flag_key', flag_key)
       experiment_config = @config_requestor.get_configuration(flag_key)
@@ -63,13 +73,13 @@ module EppoClient
       end
 
       shard = EppoClient.get_shard("assignment-#{subject_key}-#{flag_key}", experiment_config.subject_shards)
-      assigned_variation = allocation.variations.find { |var| var.shard_range.shard_in_range?(shard) }.value
+      assigned_variation = allocation.variations.find { |var| var.shard_range.shard_in_range?(shard) }
 
       assignment_event = {
         "allocation": matched_rule.allocation_key,
         "experiment": "#{flag_key}-#{matched_rule.allocation_key}",
         "featureFlag": flag_key,
-        "variation": assigned_variation,
+        "variation": assigned_variation.value,
         "subject": subject_key,
         "timestamp": Time.now.utc.iso8601,
         "subjectAttributes": subject_attributes
@@ -93,7 +103,15 @@ module EppoClient
 
     def get_subject_variation_override(experiment_config, subject)
       subject_hash = Digest::MD5.hexdigest(subject.to_s)
-      experiment_config&.overrides && experiment_config.overrides[subject_hash]
+      if experiment_config&.overrides && experiment_config.overrides[subject_hash] &&
+         experiment_config.typed_overrides[subject_hash]
+        EppoClient::VariationDto.new(
+          'override',
+          experiment_config.overrides[subject_hash],
+          experiment_config.typed_overrides[subject_hash],
+          EppoClient::ShardRange.new(0, 1000)
+        )
+      end
     end
 
     def in_experiment_sample?(subject, experiment_key, subject_shards, percent_exposure)

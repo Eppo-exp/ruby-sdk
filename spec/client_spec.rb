@@ -58,6 +58,7 @@ describe EppoClient::Client do
         EppoClient::VariationDto.new(
           'control',
           'control',
+          'control',
           EppoClient::ShardRange.new(0, 10_000)
         )
       ]
@@ -70,6 +71,7 @@ describe EppoClient::Client do
           'enabled' => true,
           'name' => 'recommendation_algo',
           'overrides' => {},
+          'typedOverrides' => {},
           'allocations' => { 'allocation' => allocation }
         }
       )
@@ -86,6 +88,7 @@ describe EppoClient::Client do
         EppoClient::VariationDto.new(
           'control',
           'control',
+          'control',
           EppoClient::ShardRange.new(0, 10_000)
         )
       ]
@@ -97,6 +100,7 @@ describe EppoClient::Client do
         'enabled' => true,
         'name' => 'recommendation_algo',
         'overrides' => {},
+        'typedOverrides' => {},
         'allocations' => { 'allocation' => allocation },
         'rules' => [EppoClient::Rule.new(
           conditions: [], allocation_key: 'allocation'
@@ -119,6 +123,7 @@ describe EppoClient::Client do
         EppoClient::VariationDto.new(
           'control',
           'control',
+          'control',
           EppoClient::ShardRange.new(0, 10_000)
         )
       ]
@@ -130,6 +135,7 @@ describe EppoClient::Client do
         'enabled' => true,
         'name' => 'recommendation_algo',
         'overrides' => {},
+        'typedOverrides' => {},
         'allocations' => { 'allocation' => allocation },
         'rules' => [EppoClient::Rule.new(
           conditions: [], allocation_key: 'allocation'
@@ -151,6 +157,7 @@ describe EppoClient::Client do
         EppoClient::VariationDto.new(
           'control',
           'control',
+          'control',
           EppoClient::ShardRange.new(0, 10_000)
         )
       ]
@@ -168,6 +175,7 @@ describe EppoClient::Client do
         'enabled' => true,
         'name' => 'experiment-key-1',
         'overrides' => {},
+        'typedOverrides' => {},
         'allocations' => { 'allocation' => allocation },
         'rules' => [text_rule]
       }
@@ -191,6 +199,7 @@ describe EppoClient::Client do
         EppoClient::VariationDto.new(
           'control',
           'control',
+          'control',
           EppoClient::ShardRange.new(0, 10_000)
         )
       ]
@@ -202,6 +211,7 @@ describe EppoClient::Client do
         'enabled' => true,
         'name' => 'recommendation_algo',
         'overrides' => { 'd6d7705392bc7af633328bea8c4c6904' => 'override-variation' },
+        'typedOverrides' => { 'd6d7705392bc7af633328bea8c4c6904' => 'override-variation' },
         'allocations' => { 'allocation' => allocation },
         'rules' => [EppoClient::Rule.new(
           conditions: [], allocation_key: 'allocation'
@@ -221,6 +231,7 @@ describe EppoClient::Client do
         EppoClient::VariationDto.new(
           'control',
           'control',
+          'control',
           EppoClient::ShardRange.new(0, 10_000)
         )
       ]
@@ -232,6 +243,7 @@ describe EppoClient::Client do
         'enabled' => false,
         'name' => 'recommendation_algo',
         'overrides' => { 'd6d7705392bc7af633328bea8c4c6904' => 'override-variation' },
+        'typedOverrides' => { 'd6d7705392bc7af633328bea8c4c6904' => 'override-variation' },
         'allocations' => { 'allocation' => allocation },
         'rules' => [EppoClient::Rule.new(
           conditions: [], allocation_key: 'allocation'

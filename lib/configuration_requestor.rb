@@ -6,11 +6,12 @@ require 'constants'
 module EppoClient
   # A class for the variation object
   class VariationDto
-    attr_reader :name, :value, :shard_range
+    attr_reader :name, :value, :typed_value, :shard_range
 
-    def initialize(name, value, shard_range)
+    def initialize(name, value, typed_value, shard_range)
       @name = name
       @value = value
+      @typed_value = typed_value
       @shard_range = shard_range
     end
   end
@@ -27,13 +28,14 @@ module EppoClient
 
   # A class for the experiment configuration object
   class ExperimentConfigurationDto
-    attr_reader :subject_shards, :enabled, :name, :overrides, :rules, :allocations
+    attr_reader :subject_shards, :enabled, :name, :overrides, :typed_overrides, :rules, :allocations
 
     def initialize(exp_config)
       @subject_shards = exp_config['subjectShards']
       @enabled = exp_config['enabled']
       @name = exp_config['name'] || nil
       @overrides = exp_config['overrides'] || {}
+      @typed_overrides = exp_config['typedOverrides'] || {}
       @rules = exp_config['rules'] || []
       @allocations = exp_config['allocations']
     end
@@ -65,8 +67,7 @@ module EppoClient
               v['percentExposure'],
               v['variations'].map do |var|
                 EppoClient::VariationDto.new(
-                  var['name'],
-                  var['value'],
+                  var['name'], var['value'], var['typedValue'],
                   EppoClient::ShardRange.new(var['shardRange']['start'], var['shardRange']['end'])
                 )
               end
