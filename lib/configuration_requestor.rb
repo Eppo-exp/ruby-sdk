@@ -43,7 +43,6 @@ module EppoClient
 
   # A class for getting exp configs from the local cache or API
   class ExperimentConfigurationRequestor
-
     attr_reader :config_store
 
     def initialize(http_client, config_store)
