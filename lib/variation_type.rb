@@ -10,6 +10,8 @@ module EppoClient
     BOOLEAN_TYPE = 'boolean'
     JSON_TYPE = 'json'
 
+    module_function
+
     # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
     def expected_type?(assigned_variation, expected_variation_type)
       case expected_variation_type
@@ -18,7 +20,8 @@ module EppoClient
       when NUMERIC_TYPE
         assigned_variation.typed_value.is_a?(Numeric)
       when BOOLEAN_TYPE
-        assigned_variation.typed_value.is_a?(TrueClass) || assigned_variation.typed_value.is_a?(FalseClass)
+        assigned_variation.typed_value.is_a?(TrueClass) ||
+          assigned_variation.typed_value.is_a?(FalseClass)
       when JSON_TYPE
         begin
           parsed_json = JSON.parse(assigned_variation.value)
@@ -32,7 +35,5 @@ module EppoClient
       end
     end
     # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
-
-    module_function :expected_type?
   end
 end

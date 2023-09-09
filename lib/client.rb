@@ -167,7 +167,8 @@ module EppoClient
       end
 
       shard = EppoClient.get_shard(
-        "assignment-#{subject_key}-#{flag_key}", experiment_config.subject_shards
+        "assignment-#{subject_key}-#{flag_key}",
+        experiment_config.subject_shards
       )
       assigned_variation = allocation.variations.find do |var|
         var.shard_range.shard_in_range?(shard)
