@@ -29,21 +29,28 @@ module EppoClient
   end
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def init(config)
     config.validate
-    sdk_version = ParseGemspec::Specification.load('eppo-server-sdk.gemspec').to_hash_object[:version]
+    sdk_version = ParseGemspec::Specification.load(
+      'eppo-server-sdk.gemspec'
+    ).to_hash_object[:version]
     sdk_params = EppoClient::SdkParams.new(config.api_key, 'ruby', sdk_version)
-    http_client = EppoClient::HttpClient.new(config.base_url, sdk_params.formatted)
-    config_store = EppoClient::ConfigurationStore.new(EppoClient::MAX_CACHE_ENTRIES)
+    http_client = EppoClient::HttpClient.new(config.base_url,
+                                             sdk_params.formatted)
+    config_store = EppoClient::ConfigurationStore.new(
+      EppoClient::MAX_CACHE_ENTRIES
+    )
     config_store.lock.with_write_lock do
       EppoClient.initialize_client(
-        EppoClient::ExperimentConfigurationRequestor.new(http_client, config_store),
+        EppoClient::ExperimentConfigurationRequestor.new(
+          http_client, config_store
+        ),
         config.assignment_logger
       )
     end
   end
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   module_function :init, :initialize_client
 end

@@ -27,9 +27,10 @@ describe EppoClient::Client do
   before(:each) do
     stub_request(
       :get,
-      "#{MOCK_BASE_URL}/randomized_assignment/v3/config?apiKey=dummy&sdkName=ruby&sdkVersion=0.2.0"
+      "#{MOCK_BASE_URL}/randomized_assignment/v3/config?apiKey=dummy&sdkName="\
+      'ruby&sdkVersion=0.2.0'
     ).to_return(
-      body: File.read('spec/test-data/rac-experiments-v2.json')
+      body: File.read('spec/test-data/rac-experiments-v3.json')
     )
     @client = EppoClient.init(
       EppoClient::Config.new(
@@ -47,7 +48,8 @@ describe EppoClient::Client do
 
   it 'tests assigning a blank experiment' do
     expect { @client.get_assignment('subject-1', '') }.to raise_error(
-      EppoClient::InvalidValueError, 'InvalidValueError: flag_key cannot be blank'
+      EppoClient::InvalidValueError,
+      'InvalidValueError: flag_key cannot be blank'
     )
   end
 
@@ -56,6 +58,7 @@ describe EppoClient::Client do
       0,
       [
         EppoClient::VariationDto.new(
+          'control',
           'control',
           'control',
           EppoClient::ShardRange.new(0, 10_000)
@@ -70,12 +73,15 @@ describe EppoClient::Client do
           'enabled' => true,
           'name' => 'recommendation_algo',
           'overrides' => {},
+          'typedOverrides' => {},
           'allocations' => { 'allocation' => allocation }
         }
       )
     )
     allow(mock_config_requestor).to receive(:fetch_and_store_configurations)
-    client = EppoClient.initialize_client(mock_config_requestor, EppoClient::AssignmentLogger.new)
+    client = EppoClient.initialize_client(
+      mock_config_requestor, EppoClient::AssignmentLogger.new
+    )
     expect(client.get_assignment('user-1', 'experiment-key-1')).to be_nil
   end
 
@@ -84,6 +90,7 @@ describe EppoClient::Client do
       1,
       [
         EppoClient::VariationDto.new(
+          'control',
           'control',
           'control',
           EppoClient::ShardRange.new(0, 10_000)
@@ -97,13 +104,16 @@ describe EppoClient::Client do
         'enabled' => true,
         'name' => 'recommendation_algo',
         'overrides' => {},
+        'typedOverrides' => {},
         'allocations' => { 'allocation' => allocation },
         'rules' => [EppoClient::Rule.new(
           conditions: [], allocation_key: 'allocation'
         )]
       }
     )
-    allow(mock_config_requestor).to receive(:get_configuration).and_return(exp_config)
+    allow(mock_config_requestor).to receive(:get_configuration).and_return(
+      exp_config
+    )
     allow(mock_config_requestor).to receive(:fetch_and_store_configurations)
     mock_logger = double('mock logger')
     allow(mock_logger).to receive(:log_assignment)
@@ -119,6 +129,7 @@ describe EppoClient::Client do
         EppoClient::VariationDto.new(
           'control',
           'control',
+          'control',
           EppoClient::ShardRange.new(0, 10_000)
         )
       ]
@@ -130,18 +141,23 @@ describe EppoClient::Client do
         'enabled' => true,
         'name' => 'recommendation_algo',
         'overrides' => {},
+        'typedOverrides' => {},
         'allocations' => { 'allocation' => allocation },
         'rules' => [EppoClient::Rule.new(
           conditions: [], allocation_key: 'allocation'
         )]
       }
     )
-    allow(mock_config_requestor).to receive(:get_configuration).and_return(exp_config)
+    allow(mock_config_requestor).to receive(:get_configuration).and_return(
+      exp_config
+    )
     allow(mock_config_requestor).to receive(:fetch_and_store_configurations)
     mock_logger = double('mock logger')
     allow(mock_logger).to receive(:log_assignment).and_raise('logging error')
     client = EppoClient.initialize_client(mock_config_requestor, mock_logger)
-    expect(client.get_assignment('user-1', 'experiment-key-1', {}, Logger::FATAL)).to eq('control')
+    expect(client.get_assignment(
+             'user-1', 'experiment-key-1', {}, Logger::FATAL
+           )).to eq('control')
   end
 
   it 'tests assign subject with with attributes and rules' do
@@ -149,6 +165,7 @@ describe EppoClient::Client do
       1,
       [
         EppoClient::VariationDto.new(
+          'control',
           'control',
           'control',
           EppoClient::ShardRange.new(0, 10_000)
@@ -160,7 +177,9 @@ describe EppoClient::Client do
       value: '.*@eppo.com',
       attribute: 'email'
     )
-    text_rule = EppoClient::Rule.new(allocation_key: 'allocation', conditions: [matches_email_condition])
+    text_rule = EppoClient::Rule.new(
+      allocation_key: 'allocation', conditions: [matches_email_condition]
+    )
     mock_config_requestor = double('mock config requestor')
     exp_config = EppoClient::ExperimentConfigurationDto.new(
       {
@@ -168,19 +187,28 @@ describe EppoClient::Client do
         'enabled' => true,
         'name' => 'experiment-key-1',
         'overrides' => {},
+        'typedOverrides' => {},
         'allocations' => { 'allocation' => allocation },
         'rules' => [text_rule]
       }
     )
-    allow(mock_config_requestor).to receive(:get_configuration).and_return(exp_config)
+    allow(mock_config_requestor).to receive(:get_configuration).and_return(
+      exp_config
+    )
     allow(mock_config_requestor).to receive(:fetch_and_store_configurations)
-    client = EppoClient.initialize_client(mock_config_requestor, EppoClient::AssignmentLogger.new)
+    client = EppoClient.initialize_client(
+      mock_config_requestor, EppoClient::AssignmentLogger.new
+    )
     expect(client.get_assignment('user-1', 'experiment-key-1')).to be_nil
     expect(
-      client.get_assignment('user-1', 'experiment-key-1', { 'email' => 'test@example.com' })
+      client.get_assignment('user-1', 'experiment-key-1', {
+                              'email' => 'test@example.com'
+                            })
     ).to be_nil
     expect(
-      client.get_assignment('user1', 'experiment-key-1', { 'email' => 'test@eppo.com' })
+      client.get_assignment('user1', 'experiment-key-1', {
+                              'email' => 'test@eppo.com'
+                            })
     ).to eq('control')
   end
 
@@ -189,6 +217,7 @@ describe EppoClient::Client do
       1,
       [
         EppoClient::VariationDto.new(
+          'control',
           'control',
           'control',
           EppoClient::ShardRange.new(0, 10_000)
@@ -201,17 +230,27 @@ describe EppoClient::Client do
         'subjectShards' => 10_000,
         'enabled' => true,
         'name' => 'recommendation_algo',
-        'overrides' => { 'd6d7705392bc7af633328bea8c4c6904' => 'override-variation' },
+        'overrides' => {
+          'd6d7705392bc7af633328bea8c4c6904' => 'override-variation'
+        },
+        'typedOverrides' => {
+          'd6d7705392bc7af633328bea8c4c6904' => 'override-variation'
+        },
         'allocations' => { 'allocation' => allocation },
         'rules' => [EppoClient::Rule.new(
           conditions: [], allocation_key: 'allocation'
         )]
       }
     )
-    allow(mock_config_requestor).to receive(:get_configuration).and_return(exp_config)
+    allow(mock_config_requestor).to receive(:get_configuration).and_return(
+      exp_config
+    )
     allow(mock_config_requestor).to receive(:fetch_and_store_configurations)
-    client = EppoClient.initialize_client(mock_config_requestor, EppoClient::AssignmentLogger.new)
-    expect(client.get_assignment('user-1', 'experiment-key-1')).to eq('override-variation')
+    client = EppoClient.initialize_client(mock_config_requestor,
+                                          EppoClient::AssignmentLogger.new)
+    expect(client.get_assignment('user-1', 'experiment-key-1')).to eq(
+      'override-variation'
+    )
   end
 
   it 'tests with subject in overrides exp disabled' do
@@ -219,6 +258,7 @@ describe EppoClient::Client do
       0,
       [
         EppoClient::VariationDto.new(
+          'control',
           'control',
           'control',
           EppoClient::ShardRange.new(0, 10_000)
@@ -231,24 +271,37 @@ describe EppoClient::Client do
         'subjectShards' => 10_000,
         'enabled' => false,
         'name' => 'recommendation_algo',
-        'overrides' => { 'd6d7705392bc7af633328bea8c4c6904' => 'override-variation' },
+        'overrides' => {
+          'd6d7705392bc7af633328bea8c4c6904' => 'override-variation'
+        },
+        'typedOverrides' => {
+          'd6d7705392bc7af633328bea8c4c6904' => 'override-variation'
+        },
         'allocations' => { 'allocation' => allocation },
         'rules' => [EppoClient::Rule.new(
           conditions: [], allocation_key: 'allocation'
         )]
       }
     )
-    allow(mock_config_requestor).to receive(:get_configuration).and_return(exp_config)
+    allow(mock_config_requestor).to receive(:get_configuration).and_return(
+      exp_config
+    )
     allow(mock_config_requestor).to receive(:fetch_and_store_configurations)
-    client = EppoClient.initialize_client(mock_config_requestor, EppoClient::AssignmentLogger.new)
-    expect(client.get_assignment('user-1', 'experiment-key-1')).to eq('override-variation')
+    client = EppoClient.initialize_client(
+      mock_config_requestor, EppoClient::AssignmentLogger.new
+    )
+    expect(client.get_assignment('user-1', 'experiment-key-1')).to eq(
+      'override-variation'
+    )
   end
 
   it 'tests with null experiment config' do
     mock_config_requestor = double('mock config requestor')
     allow(mock_config_requestor).to receive(:get_configuration)
     allow(mock_config_requestor).to receive(:fetch_and_store_configurations)
-    client = EppoClient.initialize_client(mock_config_requestor, EppoClient::AssignmentLogger.new)
+    client = EppoClient.initialize_client(
+      mock_config_requestor, EppoClient::AssignmentLogger.new
+    )
     expect(client.get_assignment('user-1', 'experiment-key-1')).to be_nil
   end
 
@@ -256,14 +309,23 @@ describe EppoClient::Client do
     it 'tests assign subject in sample' do
       puts "---- Test case for #{test_case['experiment']} Experiment"
       client = EppoClient::Client.instance
+      get_typed_assignment = {
+        'string' => client.method(:get_string_assignment),
+        'numeric' => client.method(:get_numeric_assignment),
+        'boolean' => client.method(:get_boolean_assignment),
+        'json' => client.method(:get_json_string_assignment)
+      }[test_case['valueType']]
       assignments = []
       test_case.fetch('subjects', []).each do |subject_key|
-        assignments.push(client.get_assignment(subject_key, test_case['experiment']))
+        assignments.push(
+          get_typed_assignment.call(subject_key, test_case['experiment'])
+        )
       end
       test_case.fetch('subjectsWithAttributes', []).each do |subject|
         assignments.push(
-          client.get_assignment(
-            subject['subjectKey'], test_case['experiment'], subject['subjectAttributes']
+          get_typed_assignment.call(
+            subject['subjectKey'], test_case['experiment'],
+            subject['subjectAttributes']
           )
         )
       end
