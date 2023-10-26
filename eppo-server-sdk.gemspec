@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name        = 'eppo-server-sdk'
-  s.version     = '0.2.1'
+  s.version     = '0.2.2'
   s.summary     = 'Eppo SDK for Ruby'
   s.authors     = ['Eppo']
   s.email       = 'eppo-team@geteppo.com'
