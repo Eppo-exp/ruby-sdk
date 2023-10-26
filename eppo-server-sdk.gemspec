@@ -6,22 +6,7 @@ Gem::Specification.new do |s|
   s.summary     = 'Eppo SDK for Ruby'
   s.authors     = ['Eppo']
   s.email       = 'eppo-team@geteppo.com'
-  s.files       = [
-    'lib/assignment_logger.rb',
-    'lib/client.rb',
-    'lib/config.rb',
-    'lib/configuration_requestor.rb',
-    'lib/configuration_store.rb',
-    'lib/constants.rb',
-    'lib/custom_errors.rb',
-    'lib/eppo_client.rb',
-    'lib/http_client.rb',
-    'lib/lru_cache.rb',
-    'lib/poller.rb',
-    'lib/rules.rb',
-    'lib/shard.rb',
-    'lib/validation.rb'
-  ]
+  s.files       = Dir.glob('lib/**/*.rb')
   s.homepage    = 'https://github.com/Eppo-exp/ruby-sdk'
   s.license     = 'MIT'
   s.add_dependency 'concurrent-ruby', '~> 1.1', '>= 1.1.9'
