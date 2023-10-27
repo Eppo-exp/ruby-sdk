@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'poller'
+require 'eppo_client/poller'
 
 describe EppoClient::Poller do
   it 'tests invokes callback until stopped' do

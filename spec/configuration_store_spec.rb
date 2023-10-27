@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'configuration_requestor'
-require 'configuration_store'
+require 'eppo_client/configuration_requestor'
+require 'eppo_client/configuration_store'
 
 TEST_MAX_SIZE = 10
 

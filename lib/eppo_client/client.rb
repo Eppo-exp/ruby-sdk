@@ -3,12 +3,12 @@
 require 'singleton'
 require 'time'
 
-require 'constants'
-require 'custom_errors'
-require 'rules'
-require 'shard'
-require 'validation'
-require 'variation_type'
+require_relative 'constants'
+require_relative 'custom_errors'
+require_relative 'rules'
+require_relative 'shard'
+require_relative 'validation'
+require_relative 'variation_type'
 
 module EppoClient
   # The main client singleton

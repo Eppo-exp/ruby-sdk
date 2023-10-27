@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'config'
+require 'eppo_client/config'
 
 describe EppoClient::Config do
   it 'tests config object will not show the api_key in logs' do

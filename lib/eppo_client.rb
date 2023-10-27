@@ -2,14 +2,14 @@
 
 require 'parse_gemspec'
 
-require 'assignment_logger'
-require 'http_client'
-require 'poller'
-require 'config'
-require 'client'
-require 'constants'
-require 'configuration_requestor'
-require 'configuration_store'
+require_relative 'eppo_client/assignment_logger'
+require_relative 'eppo_client/http_client'
+require_relative 'eppo_client/poller'
+require_relative 'eppo_client/config'
+require_relative 'eppo_client/client'
+require_relative 'eppo_client/constants'
+require_relative 'eppo_client/configuration_requestor'
+require_relative 'eppo_client/configuration_store'
 
 # This module scopes all the client SDK's classes and functions
 module EppoClient

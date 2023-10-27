@@ -2,13 +2,13 @@
 
 require 'webmock/rspec'
 
-require 'client'
 require 'eppo_client'
-require 'config'
-require 'assignment_logger'
-require 'configuration_requestor'
-require 'shard'
-require 'rules'
+require 'eppo_client/client'
+require 'eppo_client/config'
+require 'eppo_client/assignment_logger'
+require 'eppo_client/configuration_requestor'
+require 'eppo_client/shard'
+require 'eppo_client/rules'
 
 test_data = []
 Dir.foreach('spec/test-data/assignment-v2') do |file_name|
