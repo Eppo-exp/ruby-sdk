@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'custom_errors'
-require 'constants'
+require_relative 'custom_errors'
+require_relative 'constants'
 
 module EppoClient
   # A class for the variation object

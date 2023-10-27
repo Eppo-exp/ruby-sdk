@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'custom_errors'
+require_relative 'custom_errors'
 
 # The helper module to validate keys
 module EppoClient

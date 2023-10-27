@@ -3,7 +3,7 @@
 require 'faraday'
 require 'faraday/retry'
 
-require 'custom_errors'
+require_relative 'custom_errors'
 
 REQUEST_TIMEOUT_SECONDS = 2
 # This applies only to failed DNS lookups and connection timeouts,

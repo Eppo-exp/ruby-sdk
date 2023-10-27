@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rules'
+require 'eppo_client/rules'
 
 greater_than_condition = EppoClient::Condition.new(operator: EppoClient::OperatorType::GT, value: 10, attribute: 'age')
 less_than_condition = EppoClient::Condition.new(operator: EppoClient::OperatorType::LT, value: 100, attribute: 'age')

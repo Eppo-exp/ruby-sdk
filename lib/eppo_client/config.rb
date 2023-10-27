@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-require 'validation'
-require 'assignment_logger'
+require_relative 'validation'
+require_relative 'assignment_logger'
 
 module EppoClient
   # The class for configuring the Eppo client singleton
