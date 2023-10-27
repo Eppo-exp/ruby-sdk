@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'lib/eppo_client/version'
+
 Gem::Specification.new do |s|
   s.name        = 'eppo-server-sdk'
-  s.version     = '0.2.2'
+  s.version     = EppoClient::VERSION
   s.summary     = 'Eppo SDK for Ruby'
   s.authors     = ['Eppo']
   s.email       = 'eppo-team@geteppo.com'
@@ -12,7 +14,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'concurrent-ruby', '~> 1.1', '>= 1.1.9'
   s.add_dependency 'faraday', '~> 2.7', '>= 2.7.1'
   s.add_dependency 'faraday-retry', '~> 2.0', '>= 2.0.0'
-  s.add_dependency 'parse_gemspec', '~> 1.0', '>= 1.0.0'
   s.add_development_dependency 'rake', '~> 13.0', '>= 13.0.6'
   s.add_development_dependency 'rspec', '~> 3.12', '>= 3.12.0'
   s.add_development_dependency 'rubocop', '~> 0.82.0'

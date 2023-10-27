@@ -1,7 +1,5 @@
 # frozen_string_literal: true
 
-require 'parse_gemspec'
-
 require_relative 'eppo_client/assignment_logger'
 require_relative 'eppo_client/http_client'
 require_relative 'eppo_client/poller'
@@ -10,6 +8,7 @@ require_relative 'eppo_client/client'
 require_relative 'eppo_client/constants'
 require_relative 'eppo_client/configuration_requestor'
 require_relative 'eppo_client/configuration_store'
+require_relative 'eppo_client/version'
 
 # This module scopes all the client SDK's classes and functions
 module EppoClient
@@ -29,13 +28,11 @@ module EppoClient
   end
   # rubocop:enable Metrics/MethodLength
 
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def init(config)
     config.validate
-    sdk_version = ParseGemspec::Specification.load(
-      'eppo-server-sdk.gemspec'
-    ).to_hash_object[:version]
-    sdk_params = EppoClient::SdkParams.new(config.api_key, 'ruby', sdk_version)
+    sdk_params = EppoClient::SdkParams.new(config.api_key, 'ruby',
+                                           EppoClient::VERSION)
     http_client = EppoClient::HttpClient.new(config.base_url,
                                              sdk_params.formatted)
     config_store = EppoClient::ConfigurationStore.new(
@@ -50,7 +47,7 @@ module EppoClient
       )
     end
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   module_function :init, :initialize_client
 end

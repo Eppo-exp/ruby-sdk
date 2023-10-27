@@ -9,6 +9,7 @@ require 'eppo_client/assignment_logger'
 require 'eppo_client/configuration_requestor'
 require 'eppo_client/shard'
 require 'eppo_client/rules'
+require 'eppo_client/version'
 
 test_data = []
 Dir.foreach('spec/test-data/assignment-v2') do |file_name|
@@ -28,7 +29,7 @@ describe EppoClient::Client do
     stub_request(
       :get,
       "#{MOCK_BASE_URL}/randomized_assignment/v3/config?apiKey=dummy&sdkName="\
-      'ruby&sdkVersion=0.2.2'
+      "ruby&sdkVersion=#{EppoClient::VERSION}"
     ).to_return(
       body: File.read('spec/test-data/rac-experiments-v3.json')
     )
