@@ -1,8 +1,10 @@
 # frozen_string_literal: true
 
+require_relative 'lib/eppo_client/version'
+
 Gem::Specification.new do |s|
   s.name        = 'eppo-server-sdk'
-  s.version     = '0.2.2'
+  s.version     = EppoClient::VERSION
   s.summary     = 'Eppo SDK for Ruby'
   s.authors     = ['Eppo']
   s.email       = 'eppo-team@geteppo.com'

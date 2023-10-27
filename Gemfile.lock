@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    eppo-server-sdk (0.2.2)
+    eppo-server-sdk (0.2.3)
       concurrent-ruby (~> 1.1, >= 1.1.9)
       faraday (~> 2.7, >= 2.7.1)
       faraday-retry (~> 2.0, >= 2.0.0)
@@ -13,17 +13,15 @@ GEM
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
     ast (2.4.2)
-    base64 (0.1.1)
-    concurrent-ruby (1.2.2)
+    concurrent-ruby (1.1.10)
     crack (0.4.5)
       rexml
     diff-lcs (1.5.0)
-    faraday (2.7.11)
-      base64
+    faraday (2.7.2)
       faraday-net_http (>= 2.0, < 3.1)
       ruby2_keywords (>= 0.0.4)
     faraday-net_http (3.0.2)
-    faraday-retry (2.2.0)
+    faraday-retry (2.0.0)
       faraday (~> 2.0)
     hashdiff (1.0.1)
     jaro_winkler (1.5.6)
