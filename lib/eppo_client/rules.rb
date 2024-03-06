@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require 'semver'
+
 # The helper module for rules
 module EppoClient
   module OperatorType
@@ -60,7 +62,12 @@ module EppoClient
     when OperatorType::NOT_ONE_OF
       !condition.value.map(&:downcase).include?(subject_value.to_s.downcase)
     else
-      subject_value.is_a?(Numeric) && evaluate_numeric_condition(subject_value, condition)
+      # Numeric operator: value could be numeric or semver.
+      if subject_value.is_a?(Numeric)
+        evaluate_numeric_condition(subject_value, condition)
+      elsif valid_semver?(subject_value)
+        compare_semver(subject_value, condition.value, condition.operator)
+      end
     end
   end
   # rubocop:enable Metrics/AbcSize, Metrics/MethodLength
@@ -82,6 +89,31 @@ module EppoClient
   end
   # rubocop:enable Metrics/MethodLength
 
+  # rubocop:disable Metrics/MethodLength
+  def compare_semver(attribute_value, condition_value, operator)
+    unless valid_semver?(attribute_value) && valid_semver?(condition_value)
+      return false
+    end
+
+    case operator
+    when OperatorType::GT
+      SemVer.parse(attribute_value) > SemVer.parse(condition_value)
+    when OperatorType::GTE
+      SemVer.parse(attribute_value) >= SemVer.parse(condition_value)
+    when OperatorType::LT
+      SemVer.parse(attribute_value) < SemVer.parse(condition_value)
+    when OperatorType::LTE
+      SemVer.parse(attribute_value) <= SemVer.parse(condition_value)
+    else
+      false
+    end
+  end
+  # rubocop:enable Metrics/MethodLength
+
+  def valid_semver?(string)
+    !SemVer.parse(string).nil?
+  end
+
   module_function :find_matching_rule, :matches_rule, :evaluate_condition,
-                  :evaluate_numeric_condition
+                  :evaluate_numeric_condition, :valid_semver?, :compare_semver
 end
