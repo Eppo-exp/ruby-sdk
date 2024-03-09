@@ -16,6 +16,7 @@ text_rule = EppoClient::Rule.new(allocation_key: 'allocation', conditions: [matc
 rule_with_empty_conditions = EppoClient::Rule.new(allocation_key: 'allocation', conditions: [])
 
 # rubocop:disable Metrics/BlockLength
+# rubocop:disable Layout/LineLength
 describe EppoClient::Rule do
   it 'tests find_matching_rule_when_no_rules_match' do
     subject_attributes = { 'age' => 20, 'country' => 'US' }
@@ -42,6 +43,40 @@ describe EppoClient::Rule do
 
   it 'tests find matching rule if numeric operator with string' do
     expect(EppoClient.find_matching_rule({ 'age' => '99' }, [numeric_rule])).to be_nil
+  end
+
+  it 'tests find matching rule for semver string' do
+    semver_greater_than_condition = EppoClient::Condition.new(
+      operator: EppoClient::OperatorType::GTE, value: '1.0.0', attribute: 'version'
+    )
+    semver_less_than_condition = EppoClient::Condition.new(
+      operator: EppoClient::OperatorType::LTE, value: '2.0.0', attribute: 'version'
+    )
+    semver_rule = EppoClient::Rule.new(
+      allocation_key: 'allocation',
+      conditions: [semver_less_than_condition, semver_greater_than_condition]
+    )
+
+    expect(EppoClient.find_matching_rule({ 'version' => '1.1.0' }, [semver_rule])).to be(semver_rule)
+    expect(EppoClient.find_matching_rule({ 'version' => '2.0.0' }, [semver_rule])).to be(semver_rule)
+    expect(EppoClient.find_matching_rule({ 'version' => '2.1.0' }, [semver_rule])).to be_nil
+  end
+
+  it 'tests find matching rule for semver string, ensuring it is not interpreted lexographically' do
+    semver_greater_than_condition = EppoClient::Condition.new(
+      operator: EppoClient::OperatorType::GTE, value: '1.2.3', attribute: 'version'
+    )
+
+    semver_less_than_condition = EppoClient::Condition.new(
+      operator: EppoClient::OperatorType::LTE, value: '1.15.0', attribute: 'version'
+    )
+
+    semver_rule = EppoClient::Rule.new(
+      allocation_key: 'allocation',
+      conditions: [semver_less_than_condition, semver_greater_than_condition]
+    )
+
+    expect(EppoClient.find_matching_rule({ 'version' => '1.12.0' }, [semver_rule])).to be(semver_rule)
   end
 
   it 'tests find matching rule with numeric value and regex' do
@@ -138,3 +173,4 @@ describe EppoClient::Rule do
   end
 end
 # rubocop:enable Metrics/BlockLength
+# rubocop:enable Layout/LineLength
