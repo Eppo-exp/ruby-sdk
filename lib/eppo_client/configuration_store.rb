@@ -20,9 +20,15 @@ module EppoClient
 
     def assign_configurations(configs)
       @lock.with_write_lock do
+        # Create a temporary new cache and populate it.
+        new_cache = EppoClient::LRUCache.new(@cache.size)
         configs.each do |key, config|
-          @cache[key] = config
+          new_cache[key] = config
         end
+
+        # Replace the old cache with the new one.
+        # Performs an atomic swap.
+        @cache = new_cache
       end
     end
   end

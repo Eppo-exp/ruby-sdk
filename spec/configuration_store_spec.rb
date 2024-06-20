@@ -36,4 +36,15 @@ describe EppoClient::ConfigurationStore do
     expect(store.retrieve_configuration('item_to_be_evicted')).to be_nil
     expect(store.retrieve_configuration("test-entry-#{TEST_MAX_SIZE - 1}")).to be(test_exp)
   end
+
+  it 'uses the incoming configurations as the source of truth' do
+    store.assign_configurations({ 'item1' => test_exp, 'item2' => test_exp })
+
+    expect(store.retrieve_configuration('item1')).to be(test_exp)
+    expect(store.retrieve_configuration('item2')).to be(test_exp)
+
+    store.assign_configurations({ 'item1' => test_exp })
+    expect(store.retrieve_configuration('item1')).to be(test_exp)
+    expect(store.retrieve_configuration('item2')).to be_nil
+  end
 end
