@@ -32,7 +32,8 @@ GEM
     public_suffix (5.0.1)
     rainbow (3.1.1)
     rake (13.0.6)
-    rexml (3.2.5)
+    rexml (3.3.0)
+      strscan
     rspec (3.12.0)
       rspec-core (~> 3.12.0)
       rspec-expectations (~> 3.12.0)
@@ -56,6 +57,7 @@ GEM
       unicode-display_width (>= 1.4.0, < 2.0)
     ruby-progressbar (1.11.0)
     semver2 (3.4.2)
+    strscan (3.1.0)
     unicode-display_width (1.8.0)
     uri (0.13.0)
     webmock (3.18.1)
@@ -66,6 +68,7 @@ GEM
 PLATFORMS
   aarch64-linux
   arm64-darwin-21
+  x86_64-linux
 
 DEPENDENCIES
   eppo-server-sdk!
