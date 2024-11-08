@@ -1,5 +1,7 @@
 # Eppo SDK for Ruby
 
+This repository has been migrated to https://github.com/Eppo-exp/eppo-multiplatform.
+
 ## Getting Started
 
 Refer to our [SDK documentation](https://docs.geteppo.com/feature-flags/sdks/ruby) for how to install and use the SDK.
